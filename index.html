@@ -78,12 +78,15 @@
     top:28px;
     right:32px;
     z-index:60;
+  }
+  .top-nav-links{
     display:flex;
     flex-wrap:wrap;
     justify-content:flex-end;
     gap:5px 22px;
     max-width:min(56vw,440px);
   }
+  .nav-toggle{ display:none; }
   .top-nav a{
     font-family:var(--font-mono);
     font-size:0.74rem;
@@ -101,12 +104,102 @@
 
   @media (max-width:640px){
     .top-nav{
-      top:18px;
-      right:18px;
-      gap:4px 14px;
-      max-width:min(72vw,320px);
+      top:14px;
+      right:14px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
     }
-    .top-nav a{ font-size:0.66rem; }
+
+    /* Hamburger button */
+    .nav-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:42px;
+      height:42px;
+      border-radius:10px;
+      background:rgba(44,26,74,0.82);
+      border:none;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      padding:0;
+    }
+    .nav-toggle-bars{
+      display:block;
+      position:relative;
+      width:18px;
+      height:12px;
+    }
+    .nav-toggle-bars span{
+      position:absolute;
+      left:0;
+      width:100%;
+      height:1.5px;
+      background:var(--ink-inverse);
+      border-radius:2px;
+      transition:transform .25s ease, opacity .2s ease;
+    }
+    .nav-toggle-bars span:nth-child(1){ top:0; }
+    .nav-toggle-bars span:nth-child(2){ top:50%; transform:translateY(-50%); }
+    .nav-toggle-bars span:nth-child(3){ bottom:0; }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(1){
+      top:50%; transform:translateY(-50%) rotate(45deg);
+    }
+    .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(2){ opacity:0; }
+    .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(3){
+      bottom:auto; top:50%; transform:translateY(-50%) rotate(-45deg);
+    }
+
+    /* Panel drops down from the top-right corner */
+    .top-nav-links{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:0;
+      max-width:none;
+      margin-top:8px;
+      min-width:170px;
+      padding:4px 0;
+      border-radius:12px;
+      background:rgba(44,26,74,0.94);
+      border:1px solid rgba(201,169,233,0.28);
+      box-shadow:0 18px 40px -14px rgba(0,0,0,0.65);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      transform-origin:top right;
+      transform:translateY(-6px) scale(0.96);
+      opacity:0;
+      pointer-events:none;
+      visibility:hidden;
+      transition:opacity .2s ease, transform .2s ease, visibility .2s;
+    }
+    .top-nav.is-open .top-nav-links{
+      opacity:1;
+      transform:translateY(0) scale(1);
+      pointer-events:auto;
+      visibility:visible;
+    }
+    .top-nav a{
+      font-size:0.74rem;
+      width:100%;
+      padding:11px 16px;
+      text-align:right;
+      border-bottom:1px solid rgba(201,169,233,0.12);
+    }
+    .top-nav a:last-child{ border-bottom:none; }
+    .top-nav a:hover,
+    .top-nav a:focus-visible{
+      color:var(--ink-inverse);
+      border-bottom-color:rgba(201,169,233,0.12);
+      background:rgba(124,79,199,0.22);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .top-nav-links{ transition:none; }
+    .nav-toggle-bars span{ transition:none; }
   }
 
   /* ---------- iPod Touch (Black, Landscape) ---------- */
@@ -273,26 +366,6 @@
     text-shadow: 0 2px 10px rgba(0,0,0,0.8);
   }
 
-  .scroll-cue{
-    position:absolute;
-    bottom:28px; left:32px;
-    display:flex; align-items:center; gap:10px;
-    font-family:var(--font-mono);
-    font-size:0.72rem;
-    color:var(--ink-soft-inverse);
-  }
-  .scroll-cue::before{
-    content:'';
-    width:1px; height:26px;
-    background:var(--ink-soft-inverse);
-    display:inline-block;
-    animation:scrollpulse 1.8s ease-in-out infinite;
-  }
-  @keyframes scrollpulse{
-    0%,100%{ opacity:0.25; }
-    50%{ opacity:0.9; }
-  }
-
   @media (max-width:700px){
     .ipod-case { transform: scale(0.6); margin-bottom: -70px; }
   }
@@ -417,6 +490,65 @@
     .polaroid:nth-of-type(14){ top: 1860px; left: 40%; }
     .polaroid:nth-of-type(15){ top: 2000px; left: 12%; }
     .polaroid:nth-of-type(16){ top: 2140px; left: 40%; }
+  }
+
+  /* Mobile: tidy 2 x 8 grid instead of the tossed pile */
+  @media (max-width:640px){
+    .pegboard{
+      height:auto;
+      overflow:visible;
+      width:auto;
+      left:auto;
+      right:auto;
+      margin-left:0;
+      margin-right:0;
+    }
+    .polaroid-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:18px 14px;
+      height:auto;
+      padding:0;
+      max-width:420px;
+      margin:0 auto;
+      justify-items:center;
+    }
+    /* Reset the absolute tossed positions from the wider breakpoints */
+    .polaroid,
+    .polaroid:nth-of-type(1),
+    .polaroid:nth-of-type(2),
+    .polaroid:nth-of-type(3),
+    .polaroid:nth-of-type(4),
+    .polaroid:nth-of-type(5),
+    .polaroid:nth-of-type(6),
+    .polaroid:nth-of-type(7),
+    .polaroid:nth-of-type(8),
+    .polaroid:nth-of-type(9),
+    .polaroid:nth-of-type(10),
+    .polaroid:nth-of-type(11),
+    .polaroid:nth-of-type(12),
+    .polaroid:nth-of-type(13),
+    .polaroid:nth-of-type(14),
+    .polaroid:nth-of-type(15),
+    .polaroid:nth-of-type(16){
+      position:static;
+      top:auto;
+      left:auto;
+      width:100%;
+      transform:none;
+      z-index:1;
+    }
+    .polaroid{
+      padding:9px 9px 4px;
+      box-shadow:0 10px 20px -12px rgba(23,21,28,0.35);
+    }
+    .polaroid:hover{ transform:none !important; }
+    .polaroid-photo .plus{ font-size:1.25rem; }
+    .polaroid-photo .ph-label{ font-size:0.54rem; }
+    .polaroid figcaption{
+      font-size:1.05rem;
+      padding:8px 2px 4px;
+    }
   }
 
 
@@ -612,11 +744,16 @@
 <body>
 
 <nav class="top-nav" aria-label="Social links">
-  <a href="http://instagram.com/maplewoodstudiosla" target="_blank" rel="noopener">Instagram</a>
-  <a href="https://www.tiktok.com/@itsoweezy" target="_blank" rel="noopener">TikTok</a>
-  <a href="https://www.linkedin.com/company/maplewoodstudios/" target="_blank" rel="noopener">LinkedIn</a>
-  <a href="https://open.spotify.com/playlist/2SzN39D7cKi98IEniKy28t" target="_blank" rel="noopener">Spotify</a>
-  <a href="https://music.apple.com/us/playlist/maplewood-projects/pl.u-PDb4YxVIyExBpWL" target="_blank" rel="noopener">Apple Music</a>
+  <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+    <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  </button>
+  <div class="top-nav-links" id="navLinks">
+    <a href="http://instagram.com/maplewoodstudiosla" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.tiktok.com/@itsoweezy" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.linkedin.com/company/maplewoodstudios/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://open.spotify.com/playlist/2SzN39D7cKi98IEniKy28t" target="_blank" rel="noopener">Spotify</a>
+    <a href="https://music.apple.com/us/playlist/maplewood-projects/pl.u-PDb4YxVIyExBpWL" target="_blank" rel="noopener">Apple Music</a>
+  </div>
 </nav>
 
 <main>
@@ -796,7 +933,6 @@
       <a class="player-link" href="https://music.apple.com/us/playlist/maplewood-projects/pl.u-PDb4YxVIyExBpWL" target="_blank" rel="noopener">Listen on Apple Music</a>
     </div>
 
-    <p class="scroll-cue">scroll</p>
   </section>
 
   <section id="vibes" class="section vibes">
@@ -977,6 +1113,33 @@
 <script>
 (function(){
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Mobile hamburger menu */
+  var topNav = document.querySelector('.top-nav');
+  var navToggle = document.getElementById('navToggle');
+  if (topNav && navToggle){
+    function setNavOpen(open){
+      topNav.classList.toggle('is-open', open);
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    navToggle.addEventListener('click', function(e){
+      e.stopPropagation();
+      setNavOpen(!topNav.classList.contains('is-open'));
+    });
+    topNav.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', function(){ setNavOpen(false); });
+    });
+    document.addEventListener('click', function(e){
+      if (topNav.classList.contains('is-open') && !topNav.contains(e.target)) setNavOpen(false);
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && topNav.classList.contains('is-open')){
+        setNavOpen(false);
+        navToggle.focus();
+      }
+    });
+  }
 
   /* Scroll to top buttons */
   document.querySelectorAll('[data-scrolltop]').forEach(function(btn){
