@@ -491,7 +491,11 @@
     font-family:var(--font-hand);
     font-size:1.35rem;
     line-height:1.3;
-    min-height:1.3em;
+    /* border-box means min-height is the TOTAL box height, so it has to
+       include the caption's own padding (12px + 6px) on top of one line
+       of text — otherwise an empty caption ends up shorter than a filled
+       one instead of matching it. */
+    min-height:calc(1.3em + 18px);
     color:var(--ink);
     text-align:center;
     padding:12px 4px 6px;
@@ -573,7 +577,7 @@
     .polaroid figcaption{
       font-size:1.05rem;
       line-height:1.3;
-      min-height:1.3em;
+      min-height:calc(1.3em + 12px); /* padding here is 8px + 4px */
       padding:8px 2px 4px;
     }
   }
